@@ -1,9 +1,7 @@
 target/
 .mvn/wrapper/maven-wrapper.jar
 
-### H2 file database ###
-*.mv.db
-*.trace.db
+
 
 ### STS ###
 .apt_generated
