@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page de détail</title>
+  </head>
+  <body>
+    <header id="entete">
+      <h1>Page de détail</h1>
+    </header>
+
+    <main>
+      <article>
+        <header id="presentation">
+          <h2>Titre</h2>
+          <p>Description site / page</p>
+          <img src="" alt="Image de l'entreprise" />
+          <h3>Nom</h3>
+        </header>
+
+        <section id="employes">
+          <h3>Employés</h3>
+
+          
+
+        <section id="formulaire">
+          <h3>Formulaire</h3>
+
+          <form action="#" method="post">
+            <p>
+              <label for="nom">Nom</label>
+              <input type="text" id="nom" name="nom" required />
+            </p>
+
+            <button id="bouton-envoyer" type="submit">Envoyer</button>
+          </form>
+        </section>
+      </article>
+    </main>
+
+    <footer id="pied-page">
+      <p>Copyright</p>
+    </footer>
+
+    <script>
+        fetch('http://localhost:9090/api/entreprises')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des employés');
+                }
+                return response.json();
+            })
+    </script>
+  </body>
+</html>
