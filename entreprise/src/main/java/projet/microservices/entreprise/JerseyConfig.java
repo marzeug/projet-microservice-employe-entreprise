@@ -25,7 +25,7 @@ public class JerseyConfig extends ResourceConfig {
         );
         response.getHeaders().putSingle(
             "Access-Control-Allow-Methods",
-            "GET, POST, OPTIONS"
+            "GET, POST, PUT, OPTIONS"
         );
         response.getHeaders().putSingle(
             "Access-Control-Allow-Headers",

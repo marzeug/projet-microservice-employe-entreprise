@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Page listing</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header id="entete">
@@ -14,6 +15,7 @@
       <section id="presentation">
         <h2>Titre</h2>
         <p>Description site / page</p>
+        <p><a href="favoris.html">Voir mes favoris</a></p>
       </section>
 
       <section id="entreprises">
@@ -26,7 +28,45 @@
     </footer>
 
     <script>
-      fetch("http://localhost:9090/api/entreprises")
+      const API_URL = "http://localhost:9090/api/entreprises";
+
+      function creerBoutonFavori(entreprise) {
+        const bouton = document.createElement("button");
+        bouton.type = "button";
+        bouton.className = "bouton-favori";
+        bouton.setAttribute("aria-pressed", entreprise.favori ? "true" : "false");
+        bouton.textContent = entreprise.favori ? "★" : "☆";
+        bouton.title = entreprise.favori
+          ? "Retirer des favoris"
+          : "Ajouter aux favoris";
+
+        bouton.addEventListener("click", () => {
+          bouton.disabled = true;
+          fetch(`${API_URL}/${entreprise.id}/favori`, { method: "PUT" })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Erreur lors de la mise a jour du favori");
+              }
+              return response.json();
+            })
+            .then((entrepriseMaJour) => {
+              entreprise.favori = entrepriseMaJour.favori;
+              bouton.setAttribute("aria-pressed", entreprise.favori ? "true" : "false");
+              bouton.textContent = entreprise.favori ? "★" : "☆";
+              bouton.title = entreprise.favori
+                ? "Retirer des favoris"
+                : "Ajouter aux favoris";
+            })
+            .catch((erreur) => console.error(erreur))
+            .finally(() => {
+              bouton.disabled = false;
+            });
+        });
+
+        return bouton;
+      }
+
+      fetch(API_URL)
         .then((response) => {
           if (!response.ok) {
             throw new Error("Erreur lors de la récupération des entreprises");
@@ -40,7 +80,7 @@
           const tbody = document.createElement("tbody");
 
           const headerRow = document.createElement("tr");
-          ["ID", "Nom"].forEach((text) => {
+          ["ID", "Nom", "Favori"].forEach((text) => {
             const th = document.createElement("th");
             th.textContent = text;
             headerRow.appendChild(th);
@@ -57,6 +97,10 @@
             const nomCell = document.createElement("td");
             nomCell.textContent = entreprise.nom;
             row.appendChild(nomCell);
+
+            const favoriCell = document.createElement("td");
+            favoriCell.appendChild(creerBoutonFavori(entreprise));
+            row.appendChild(favoriCell);
 
             tbody.appendChild(row);
           });
