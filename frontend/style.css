@@ -132,7 +132,11 @@ article > header { grid-column: 1 / -1; }
   text-decoration: none;
 }
 #entreprises > h2, #employes > h3, #formulaire > h3 { margin-bottom: 1.5rem; }
-
+#bouton-favoris-detail{
+  position: absolute;
+  top: 80px; /* À ajuster selon la hauteur exacte du bouton */
+  right: 40px;
+}
 /* Les noms longs restent dans le tableau, même sur petit écran. */
 table { width: 100%; border-spacing: 0; table-layout: fixed; font-size: 0.95rem; }
 th, td {

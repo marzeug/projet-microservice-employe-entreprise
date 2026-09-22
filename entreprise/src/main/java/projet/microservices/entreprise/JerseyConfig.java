@@ -21,7 +21,7 @@ public class JerseyConfig extends ResourceConfig {
     (request, response) -> {
         response.getHeaders().putSingle(
             "Access-Control-Allow-Origin",
-            "http://127.0.0.1:3000" //mettre l'url de votre front-end ici
+            "*" //mettre l'url de votre front-end ici
         );
         response.getHeaders().putSingle(
             "Access-Control-Allow-Methods",

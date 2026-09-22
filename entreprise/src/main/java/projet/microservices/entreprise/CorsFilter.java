@@ -3,6 +3,9 @@ package projet.microservices.entreprise;
 import java.io.IOException;
 import java.util.Set;
 
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,8 +13,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 @Component
 @Order(1)
@@ -20,6 +21,7 @@ public class CorsFilter implements Filter {
     private static final Set<String> ALLOWED_ORIGINS = Set.of(
             "null", // Origine envoyee par une page ouverte directement en file://
             "http://127.0.0.1:5500",
+            "http://127.0.0.1:3000",
             "*"
     );
 
