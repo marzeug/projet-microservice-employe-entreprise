@@ -40,7 +40,7 @@
           const tbody = document.createElement("tbody");
 
           const headerRow = document.createElement("tr");
-          ["ID", "Nom"].forEach((text) => {
+          ["ID", "Nom", ""].forEach((text) => {
             const th = document.createElement("th");
             th.textContent = text;
             headerRow.appendChild(th);
@@ -57,6 +57,13 @@
             const nomCell = document.createElement("td");
             nomCell.textContent = entreprise.nom;
             row.appendChild(nomCell);
+
+            const favorisCell = document.createElement("td");
+            const boutonFavoris = document.createElement("button");
+            boutonFavoris.textContent = "Ajouter aux favoris";
+            boutonFavoris.id = "favoris";
+            favorisCell.appendChild(boutonFavoris);
+            row.appendChild(favorisCell);
 
             tbody.appendChild(row);
           });
