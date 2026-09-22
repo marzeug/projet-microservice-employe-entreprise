@@ -14,15 +14,16 @@
     <main>
       <article>
         <header id="presentation">
+          <p><a href="page listing.html">Retour à la liste</a></p>
           <h2>Titre</h2>
-          <p>Description site / page</p>
-          <img src="" alt="Image de l'entreprise" />
-          <h3>Nom</h3>
-        </header>
+          <p>
+            lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
 
-        <section id="employes">
-          <h3>Employés</h3>
-        </section>
+          <img src="" alt="Image de l'entreprise" />
+          <h3 id="nom">Nom</h3>
+        </header>
 
         <section id="formulaire">
           <h3>Formulaire</h3>
@@ -52,6 +53,9 @@
       const boutonEnvoyer = document.getElementById("bouton-envoyer");
       const messageFormulaire = document.getElementById("message-formulaire");
 
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
       formulaire.addEventListener("submit", (event) => {
         event.preventDefault();
 
@@ -80,12 +84,29 @@
           })
           .catch((erreur) => {
             console.error(erreur);
-            messageFormulaire.textContent = "Erreur lors de la création de l'entreprise.";
+            messageFormulaire.textContent =
+              "Erreur lors de la création de l'entreprise.";
           })
           .finally(() => {
             boutonEnvoyer.disabled = false;
           });
       });
+
+      fetch(API_URL)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Erreur lors de la récupération des entreprises");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const entreprisesSection = document.getElementById("entreprises");
+          const entreprise = data.find((e) => e.id === parseInt(id));
+
+          nomElement = document.createElement("p");
+          nomElement.textContent = entreprise.nom;
+          document.getElementById("nom").appendChild(nomElement);
+        });
     </script>
   </body>
 </html>
