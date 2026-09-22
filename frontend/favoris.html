@@ -34,7 +34,8 @@
         const bouton = document.createElement("button");
         bouton.type = "button";
         bouton.className = "bouton-favori";
-        bouton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 2.78 5.63 6.22.91-4.5 4.38 1.06 6.19L12 17.19l-5.56 2.92 1.06-6.19L3 9.54l6.22-.91Z"/></svg>';
+        bouton.innerHTML =
+          '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 2.78 5.63 6.22.91-4.5 4.38 1.06 6.19L12 17.19l-5.56 2.92 1.06-6.19L3 9.54l6.22-.91Z"/></svg>';
         bouton.setAttribute("aria-pressed", "true");
         bouton.setAttribute("aria-label", `Favori : ${entreprise.nom}`);
         bouton.title = "Retirer des favoris";
@@ -57,7 +58,8 @@
 
       function afficherFavoris() {
         const entreprisesSection = document.getElementById("entreprises");
-        entreprisesSection.innerHTML = "<h2>Sous titre : tableau des entreprises favorites</h2>";
+        entreprisesSection.innerHTML =
+          "<h2>Sous titre : tableau des entreprises favorites</h2>";
 
         fetch(`${API_URL}/favoris`)
           .then((response) => {
@@ -69,7 +71,8 @@
           .then((data) => {
             if (data.length === 0) {
               const message = document.createElement("p");
-              message.textContent = "Aucune entreprise favorite pour le moment.";
+              message.textContent =
+                "Aucune entreprise favorite pour le moment.";
               entreprisesSection.appendChild(message);
               return;
             }
@@ -94,11 +97,16 @@
               row.appendChild(idCell);
 
               const nomCell = document.createElement("td");
-              nomCell.textContent = entreprise.nom;
+              hlink = document.createElement("a");
+              hlink.textContent = entreprise.nom;
+              hlink.href = `detail.html?id=${entreprise.id}`;
+              nomCell.appendChild(hlink);
               row.appendChild(nomCell);
 
               const favoriCell = document.createElement("td");
-              favoriCell.appendChild(creerBoutonRetirer(entreprise, afficherFavoris));
+              favoriCell.appendChild(
+                creerBoutonRetirer(entreprise, afficherFavoris),
+              );
               row.appendChild(favoriCell);
 
               tbody.appendChild(row);

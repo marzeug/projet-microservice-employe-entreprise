@@ -22,7 +22,7 @@
           </p>
 
           <img src="" alt="Image de l'entreprise" />
-          <h3>Nom</h3>
+          <h3 id="nom">Nom</h3>
         </header>
 
         <section id="formulaire">
@@ -52,6 +52,9 @@
       const champNom = document.getElementById("nom");
       const boutonEnvoyer = document.getElementById("bouton-envoyer");
       const messageFormulaire = document.getElementById("message-formulaire");
+
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
 
       formulaire.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -88,6 +91,22 @@
             boutonEnvoyer.disabled = false;
           });
       });
+
+      fetch(API_URL)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Erreur lors de la récupération des entreprises");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const entreprisesSection = document.getElementById("entreprises");
+          const entreprise = data.find((e) => e.id === parseInt(id));
+
+          nomElement = document.createElement("p");
+          nomElement.textContent = entreprise.nom;
+          document.getElementById("nom").appendChild(nomElement);
+        });
     </script>
   </body>
 </html>
