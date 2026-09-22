@@ -34,7 +34,9 @@
         const bouton = document.createElement("button");
         bouton.type = "button";
         bouton.className = "bouton-favori";
-        bouton.textContent = "★";
+        bouton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 2.78 5.63 6.22.91-4.5 4.38 1.06 6.19L12 17.19l-5.56 2.92 1.06-6.19L3 9.54l6.22-.91Z"/></svg>';
+        bouton.setAttribute("aria-pressed", "true");
+        bouton.setAttribute("aria-label", `Favori : ${entreprise.nom}`);
         bouton.title = "Retirer des favoris";
 
         bouton.addEventListener("click", () => {

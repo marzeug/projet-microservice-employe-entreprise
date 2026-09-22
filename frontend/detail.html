@@ -14,15 +14,16 @@
     <main>
       <article>
         <header id="presentation">
+          <p><a href="page listing.html">Retour à la liste</a></p>
           <h2>Titre</h2>
-          <p>Description site / page</p>
+          <p>
+            lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+
           <img src="" alt="Image de l'entreprise" />
           <h3>Nom</h3>
         </header>
-
-        <section id="employes">
-          <h3>Employés</h3>
-        </section>
 
         <section id="formulaire">
           <h3>Formulaire</h3>
@@ -80,7 +81,8 @@
           })
           .catch((erreur) => {
             console.error(erreur);
-            messageFormulaire.textContent = "Erreur lors de la création de l'entreprise.";
+            messageFormulaire.textContent =
+              "Erreur lors de la création de l'entreprise.";
           })
           .finally(() => {
             boutonEnvoyer.disabled = false;
