@@ -3,17 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Favoris</title>
+    <title>Mes favoris</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header id="entete">
-      <h1>Vos favoris</h1>
+      <h1>Mes favoris</h1>
     </header>
 
     <main>
       <section id="presentation">
         <h2>Titre</h2>
-        <p>Description site / page</p>
+        <p>Entreprises marquées comme favorites.</p>
+        <p><a href="page listing.html">Retour à la liste</a></p>
       </section>
 
       <section id="entreprises">
@@ -26,52 +28,87 @@
     </footer>
 
     <script>
-      fetch("http://localhost:9090/api/favorites")
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Erreur lors de la récupération des entreprises");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          const entreprisesSection = document.getElementById("entreprises");
-          const table = document.createElement("table");
-          const thead = document.createElement("thead");
-          const tbody = document.createElement("tbody");
+      const API_URL = "http://localhost:9090/api/entreprises";
 
-          const headerRow = document.createElement("tr");
-          ["ID", "Nom"].forEach((text) => {
-            const th = document.createElement("th");
-            th.textContent = text;
-            headerRow.appendChild(th);
-          });
-          thead.appendChild(headerRow);
+      function creerBoutonRetirer(entreprise, onRetrait) {
+        const bouton = document.createElement("button");
+        bouton.type = "button";
+        bouton.className = "bouton-favori";
+        bouton.textContent = "★";
+        bouton.title = "Retirer des favoris";
 
-          data.forEach((entreprise) => {
-            const row = document.createElement("tr");
-
-            const idCell = document.createElement("td");
-            idCell.textContent = entreprise.id;
-            row.appendChild(idCell);
-
-            const nomCell = document.createElement("td");
-            nomCell.textContent = entreprise.nom;
-            row.appendChild(nomCell);
-
-            const favorisCell = document.createElement("td");
-            const boutonFavoris = document.createElement("button");
-            boutonFavoris.textContent = "Retirer des favoris";
-            boutonFavoris.id = "favoris";
-            favorisCell.appendChild(boutonFavoris);
-            row.appendChild(favorisCell);
-
-            tbody.appendChild(row);
-          });
-
-          table.appendChild(thead);
-          table.appendChild(tbody);
-          entreprisesSection.appendChild(table);
+        bouton.addEventListener("click", () => {
+          bouton.disabled = true;
+          fetch(`${API_URL}/${entreprise.id}/favori`, { method: "PUT" })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Erreur lors de la mise a jour du favori");
+              }
+              return response.json();
+            })
+            .then(() => onRetrait())
+            .catch((erreur) => console.error(erreur));
         });
+
+        return bouton;
+      }
+
+      function afficherFavoris() {
+        const entreprisesSection = document.getElementById("entreprises");
+        entreprisesSection.innerHTML = "<h2>Sous titre : tableau des entreprises favorites</h2>";
+
+        fetch(`${API_URL}/favoris`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Erreur lors de la récupération des favoris");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.length === 0) {
+              const message = document.createElement("p");
+              message.textContent = "Aucune entreprise favorite pour le moment.";
+              entreprisesSection.appendChild(message);
+              return;
+            }
+
+            const table = document.createElement("table");
+            const thead = document.createElement("thead");
+            const tbody = document.createElement("tbody");
+
+            const headerRow = document.createElement("tr");
+            ["ID", "Nom", "Favori"].forEach((text) => {
+              const th = document.createElement("th");
+              th.textContent = text;
+              headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+
+            data.forEach((entreprise) => {
+              const row = document.createElement("tr");
+
+              const idCell = document.createElement("td");
+              idCell.textContent = entreprise.id;
+              row.appendChild(idCell);
+
+              const nomCell = document.createElement("td");
+              nomCell.textContent = entreprise.nom;
+              row.appendChild(nomCell);
+
+              const favoriCell = document.createElement("td");
+              favoriCell.appendChild(creerBoutonRetirer(entreprise, afficherFavoris));
+              row.appendChild(favoriCell);
+
+              tbody.appendChild(row);
+            });
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            entreprisesSection.appendChild(table);
+          });
+      }
+
+      afficherFavoris();
     </script>
   </body>
 </html>

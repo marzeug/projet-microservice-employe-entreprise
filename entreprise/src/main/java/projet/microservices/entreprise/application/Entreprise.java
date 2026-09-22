@@ -27,6 +27,9 @@ public class Entreprise {
 
 	private String nom;
 
+	@Column(columnDefinition = "boolean default false", nullable = false)
+	private boolean favori;
+
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "entreprise_employes", joinColumns = @JoinColumn(name = "entreprise_id"))
 	@Column(name = "id_employe")
@@ -68,5 +71,13 @@ public class Entreprise {
 
 	public void setIdEmployes(List<Integer> idEmployes) {
 		this.idEmployes = (idEmployes != null) ? idEmployes : new ArrayList<>();
+	}
+
+	public boolean isFavori() {
+		return favori;
+	}
+
+	public void setFavori(boolean favori) {
+		this.favori = favori;
 	}
 }

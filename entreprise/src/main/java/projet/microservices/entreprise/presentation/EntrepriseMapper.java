@@ -16,7 +16,7 @@ public class EntrepriseMapper {
 
 	/** Entite -> DTO (la liste des employes est completee ensuite par l'appel REST). */
 	public EntrepriseDTO mapEntrepriseToEntrepriseDTO(Entreprise entreprise) {
-		return new EntrepriseDTO(entreprise.getId(), entreprise.getNom(), new ArrayList<>());
+		return new EntrepriseDTO(entreprise.getId(), entreprise.getNom(), entreprise.isFavori(), new ArrayList<>());
 	}
 
 	/** Charge utile de creation -> entite. */
