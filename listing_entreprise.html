@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="listing_entreprise.css">
+        <title>Listing entreprise</title>
+    </head>
+    <body>
+        <h1>Titre de la page</h1>
+        <p>paragraphe</p>
+        <h2>Tableau des entreprises</h2>
+        <script>
+            fetch("http://localhost:9090/api/entreprises")
+                .then(response => {
+                    if (!response.ok){
+                        throw new Error("Réponse non valide");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    var tab = document.createElement("table");
+                    var thead = document.createElement("thead");
+                    var tbody = document.createElement("tbody");
+                    var row_th = document.createElement("tr");
+                })
+                .catch(error => {
+                    console.error("Erreur : ", error);
+                });
+        </script>
+        <footer>
+            <p>Copyright</p>
+        </footer>
+        
+        <script></script>
+    </body>
+</html>

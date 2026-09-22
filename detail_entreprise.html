@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <title>Détail entreprise</title>
+        <link rel="stylesheet" href="detail_entreprise.css">
+    </head>
+    <body>
+        <h1>Titre de la page</h1>
+        <p>paragraphe</p>
+        <h2>Employés</h2>
+        <table>
+            <tr>
+                <th>Nom</th>
+                <th>Poste</th>
+                <th>Mail</th>
+                <th>Tel</th>
+            </tr>
+            <tr>
+                <td>A</td>
+                <td>blabla</td>
+                <td>lorem ipsum</td>
+                <td>lorem ipsum</td>
+            </tr>
+            <tr>
+                <td>INR</td>
+                <td>Numérique responsable</td>
+                <td>Site web</td>
+                <td>La Rochelle</td>
+            </tr>
+            <tr>
+                <td>Green nerds</td>
+                <td>Ecoconception logicielle</td>
+                <td>Site web</td>
+                <td>Lille</td>
+            </tr>
+        </table>
+        <h2>Ajouter un employé</h2>
+        <form method="POST" action="" name="formulaire">
+            <label>Nom : </label><input type="text" name="nom" placeholder="Dupont" required><br>
+            <label>Prénom : </label><input type="text" name="prenom" placeholder="Samuel" required>
+            <label>Poste : </label><input type="text" name="prenom" placeholder="DSI">
+            <label>Mail : </label><input type="email" name="mail" required>
+            <label>Tel : </label><input type="tel" name="Tel">
+            <button id="envoyer">Envoyer</button>
+        </form>
+        <footer id="footer">
+            <p>Copyright</p>
+        </footer>
+    </body>
+</html>

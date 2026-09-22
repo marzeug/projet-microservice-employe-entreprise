@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page listing</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="entete">
+      <h1>Page listing</h1>
+    </header>
+
+    <main>
+      <section id="presentation">
+        <h2>Liste des entreprises</h2>
+        <p>
+          lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+        <p><a href="favoris.html">Voir mes favoris</a></p>
+      </section>
+
+      <section id="entreprises">
+        <h2>Sous titre : tableau des entreprises</h2>
+      </section>
+    </main>
+
+    <footer id="pied-page">
+      <p>Copyright</p>
+    </footer>
+
+    <script src="favori-celebration.js"></script>
+    <script>
+      const API_URL = "http://localhost:9090/api/entreprises";
+
+      function creerBoutonFavori(entreprise) {
+        const bouton = document.createElement("button");
+        bouton.type = "button";
+        bouton.className = "bouton-favori";
+        bouton.setAttribute(
+          "aria-pressed",
+          entreprise.favori ? "true" : "false",
+        );
+        bouton.innerHTML =
+          '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 2.78 5.63 6.22.91-4.5 4.38 1.06 6.19L12 17.19l-5.56 2.92 1.06-6.19L3 9.54l6.22-.91Z"/></svg>';
+        bouton.setAttribute("aria-label", `Favori : ${entreprise.nom}`);
+        const particules = document.createElement("span");
+        particules.className = "favori-particules";
+        particules.setAttribute("aria-hidden", "true");
+        for (let index = 0; index < 18; index++) {
+          const particule = document.createElement("span");
+          const angle = (index / 18) * Math.PI * 2;
+          const distance = index % 2 === 0 ? 62 : 44;
+          particule.className = "favori-particule";
+          particule.style.setProperty(
+            "--particule-x",
+            `${Math.cos(angle) * distance}px`,
+          );
+          particule.style.setProperty(
+            "--particule-y",
+            `${Math.sin(angle) * distance}px`,
+          );
+          particule.style.setProperty(
+            "--particule-delay",
+            `${80 + (index % 3) * 45}ms`,
+          );
+          particule.style.setProperty(
+            "--particule-color",
+            ["#f5b82e", "#e99418", "#ffd976"][index % 3],
+          );
+          particules.appendChild(particule);
+        }
+        bouton.appendChild(particules);
+        bouton.addEventListener("animationend", (event) => {
+          if (
+            event.animationName === "particule-succes" &&
+            event.target === particules.children[2]
+          ) {
+            bouton.classList.remove("favori-succes");
+          }
+        });
+        bouton.title = entreprise.favori
+          ? "Retirer des favoris"
+          : "Ajouter aux favoris";
+
+        ////// ▼ NOTRE CODE ▼ //////
+
+        bouton.addEventListener("click", () => {
+          bouton.classList.remove("favori-succes");
+          bouton.disabled = true;
+          fetch(`${API_URL}/${entreprise.id}/favori`, { method: "PUT" })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Erreur lors de la mise a jour du favori");
+              }
+              return response.json();
+            })
+            .then((entrepriseMaJour) => {
+              const ajoutFavori = !entreprise.favori && entrepriseMaJour.favori;
+              entreprise.favori = entrepriseMaJour.favori;
+              bouton.setAttribute(
+                "aria-pressed",
+                entreprise.favori ? "true" : "false",
+              );
+              if (ajoutFavori) {
+                bouton.classList.add("favori-succes");
+                window.celebrerFavori(bouton);
+              }
+              bouton.title = entreprise.favori
+                ? "Retirer des favoris"
+                : "Ajouter aux favoris";
+            })
+            .catch((erreur) => console.error(erreur))
+            .finally(() => {
+              bouton.disabled = false;
+            });
+        });
+
+        return bouton;
+      }
+
+      fetch(API_URL)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Erreur lors de la récupération des entreprises");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const entreprisesSection = document.getElementById("entreprises");
+          const table = document.createElement("table");
+          const thead = document.createElement("thead");
+          const tbody = document.createElement("tbody");
+
+          const headerRow = document.createElement("tr");
+          ["ID", "Nom", "Favori"].forEach((text) => {
+            const th = document.createElement("th");
+            th.textContent = text;
+            headerRow.appendChild(th);
+          });
+          thead.appendChild(headerRow);
+
+          data.forEach((entreprise) => {
+            const row = document.createElement("tr");
+
+            const idCell = document.createElement("td");
+            idCell.textContent = entreprise.id;
+            row.appendChild(idCell);
+
+            const nomCell = document.createElement("td");
+            hlink = document.createElement("a");
+            hlink.textContent = entreprise.nom;
+            hlink.href = `detail.html?id=${entreprise.id}`;
+            nomCell.appendChild(hlink);
+            row.appendChild(nomCell);
+
+            const favoriCell = document.createElement("td");
+            favoriCell.appendChild(creerBoutonFavori(entreprise));
+            row.appendChild(favoriCell);
+
+            tbody.appendChild(row);
+          });
+
+          table.appendChild(thead);
+          table.appendChild(tbody);
+          entreprisesSection.appendChild(table);
+        });
+    </script>
+  </body>
+</html>

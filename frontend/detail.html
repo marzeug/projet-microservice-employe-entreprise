@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page de détail</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="entete">
+      <h1>Page de détail</h1>
+    </header>
+
+    <main>
+      <article>
+        <header id="presentation">
+          <p><a href="page listing.html">Retour à la liste</a></p>
+          <p id="bouton-favoris-detail"></p>
+          <h2>Titre</h2>
+          <p>
+            lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+
+          <img src="" alt="Image de l'entreprise" />
+          <h3 id="nom">Nom</h3>
+        </header>
+
+        <section id="formulaire">
+          <h3>Formulaire</h3>
+
+          <form action="#" method="post">
+            <p>
+              <label for="nom">Nom</label>
+              <input type="text" id="nom" name="nom" required />
+            </p>
+
+            <button id="bouton-envoyer" type="submit">Envoyer</button>
+          </form>
+          <p id="message-formulaire"></p>
+        </section>
+      </article>
+    </main>
+
+    <footer id="pied-page">
+      <p>Copyright</p>
+    </footer>
+
+    <script>
+      const API_URL = "http://localhost:9090/api/entreprises";
+
+      const formulaire = document.querySelector("#formulaire form");
+      const champNom = document.getElementById("nom");
+      const boutonEnvoyer = document.getElementById("bouton-envoyer");
+      const messageFormulaire = document.getElementById("message-formulaire");
+
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
+      function creerBoutonFavori(entreprise) {
+        const bouton = document.createElement("button");
+        bouton.type = "button";
+        bouton.className = "bouton-favori";
+        bouton.setAttribute(
+          "aria-pressed",
+          entreprise.favori ? "true" : "false",
+        );
+        bouton.innerHTML =
+          '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 2.78 5.63 6.22.91-4.5 4.38 1.06 6.19L12 17.19l-5.56 2.92 1.06-6.19L3 9.54l6.22-.91Z"/></svg>';
+        bouton.setAttribute("aria-label", `Favori : ${entreprise.nom}`);
+        const particules = document.createElement("span");
+        particules.className = "favori-particules";
+        particules.setAttribute("aria-hidden", "true");
+        for (let index = 0; index < 18; index++) {
+          const particule = document.createElement("span");
+          const angle = (index / 18) * Math.PI * 2;
+          const distance = index % 2 === 0 ? 62 : 44;
+          particule.className = "favori-particule";
+          particule.style.setProperty(
+            "--particule-x",
+            `${Math.cos(angle) * distance}px`,
+          );
+          particule.style.setProperty(
+            "--particule-y",
+            `${Math.sin(angle) * distance}px`,
+          );
+          particule.style.setProperty(
+            "--particule-delay",
+            `${80 + (index % 3) * 45}ms`,
+          );
+          particule.style.setProperty(
+            "--particule-color",
+            ["#f5b82e", "#e99418", "#ffd976"][index % 3],
+          );
+          particules.appendChild(particule);
+        }
+        bouton.appendChild(particules);
+        bouton.addEventListener("animationend", (event) => {
+          if (
+            event.animationName === "particule-succes" &&
+            event.target === particules.children[2]
+          ) {
+            bouton.classList.remove("favori-succes");
+          }
+        });
+        bouton.title = entreprise.favori
+          ? "Retirer des favoris"
+          : "Ajouter aux favoris";
+
+        ////// ▼ NOTRE CODE ▼ //////
+
+        bouton.addEventListener("click", () => {
+          bouton.classList.remove("favori-succes");
+          bouton.disabled = true;
+          fetch(`${API_URL}/${entreprise.id}/favori`, { method: "PUT" })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Erreur lors de la mise a jour du favori");
+              }
+              return response.json();
+            })
+            .then((entrepriseMaJour) => {
+              const ajoutFavori = !entreprise.favori && entrepriseMaJour.favori;
+              entreprise.favori = entrepriseMaJour.favori;
+              bouton.setAttribute(
+                "aria-pressed",
+                entreprise.favori ? "true" : "false",
+              );
+              if (ajoutFavori) {
+                bouton.classList.add("favori-succes");
+                window.celebrerFavori(bouton);
+              }
+              bouton.title = entreprise.favori
+                ? "Retirer des favoris"
+                : "Ajouter aux favoris";
+            })
+            .catch((erreur) => console.error(erreur))
+            .finally(() => {
+              bouton.disabled = false;
+            });
+        });
+
+        return bouton;
+      }
+
+      formulaire.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const nom = champNom.value.trim();
+        if (!nom) {
+          return;
+        }
+
+        boutonEnvoyer.disabled = true;
+        messageFormulaire.textContent = "";
+
+        fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nom, idEmployes: [] }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Erreur lors de la création de l'entreprise");
+            }
+            return response.json();
+          })
+          .then((entrepriseCreee) => {
+            messageFormulaire.textContent = `Entreprise "${entrepriseCreee.nom}" créée (id ${entrepriseCreee.id}).`;
+            formulaire.reset();
+          })
+          .catch((erreur) => {
+            console.error(erreur);
+            messageFormulaire.textContent =
+              "Erreur lors de la création de l'entreprise.";
+          })
+          .finally(() => {
+            boutonEnvoyer.disabled = false;
+          });
+      });
+
+      fetch(API_URL)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Erreur lors de la récupération des entreprises");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const entreprisesSection = document.getElementById("entreprises");
+          const entreprise = data.find((e) => e.id === parseInt(id));
+
+          nomElement = document.createElement("p");
+          nomElement.textContent = entreprise.nom;
+          document.getElementById("nom").appendChild(nomElement);
+
+          const favoriCell = document.createElement("p");
+          document.getElementById("bouton-favoris-detail").appendChild(creerBoutonFavori(entreprise));
+        });
+    </script>
+  </body>
+</html>

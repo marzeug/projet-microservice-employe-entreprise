@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-EmployeApplication<employe>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "projet.microservices.employe.EmployeApplication",
+      "projectName": "employe",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-EntrepriseApplication<entreprise>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "projet.microservices.entreprise.EntrepriseApplication",
+      "projectName": "entreprise",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

@@ -17,5 +17,20 @@ public class JerseyConfig extends ResourceConfig {
 
 	public JerseyConfig() {
 		register(EntreprisePresentation.class);
+		register((jakarta.ws.rs.container.ContainerResponseFilter)
+    (request, response) -> {
+        response.getHeaders().putSingle(
+            "Access-Control-Allow-Origin",
+            "*" //mettre l'url de votre front-end ici
+        );
+        response.getHeaders().putSingle(
+            "Access-Control-Allow-Methods",
+            "GET, POST, PUT, OPTIONS"
+        );
+        response.getHeaders().putSingle(
+            "Access-Control-Allow-Headers",
+            "Content-Type"
+        );
+    });
 	}
 }
